@@ -1,12 +1,10 @@
 <template>
-	<div class="index">
-		<f-head></f-head>
+	<div class="manager">
+		<m-head></m-head>
 		<div class="index-content-row">
 			<div class="content-warp">
 				<div class="index-content">
-					<f-content>
-						lallalal
-					</f-content>
+					<f-content></f-content>
 				</div>
 			</div>
 		</div>
@@ -14,25 +12,22 @@
 </template>
 
 <script>
-	import FHead from './common/f-head.vue'
-
-	import FContent from './common/f-content.vue'
-
-	export default {
-		name: 'index',
+		import MHead from './common/m-head.vue'
+		import FContent from './common/f-content.vue'
+		export default {
+		name: 'manager',
 		data () {
 			return {
 				msg: 'Welcome to Your INDEX'
 			}
 		},
-		components: {FHead,FContent}
+		components: {MHead,FContent}
 
 	}
 </script>
-
 <style lang="scss" rel="stylesheet/scss" type="text/css">
 
-	.index {
+	.manager{
 		position: relative;
 		height: 100%;
 		overflow:hidden;

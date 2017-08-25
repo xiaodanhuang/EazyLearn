@@ -2,10 +2,13 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Index from '@/pages/index'
 import Login from  '@/pages/Login'
+import Manager from  '@/pages/manager'
+import Userset from '@/pages/user-set'
+import Usercourse from '@/pages/user-course'
 import Stdcourse from  '@/pages/student/stu-course'
 import Stdwork from  '@/pages/student/stu-work'
+import Stdtail from  '@/pages/student/stu-detail'
 import Stdquestion from  '@/pages/student/stu-question'
-import Stdset from  '@/pages/student/stu-set'
 import Tea from  '@/pages/teacher'
 import Teacourse from  '@/pages/teacher/tea-course'
 import Teawork from  '@/pages/teacher/tea-work'
@@ -20,11 +23,25 @@ export default new Router({
 			path: '/',
 			name:"login",
 			component:Login
+		},{
+			path:'/user-set',
+			component:Userset
+
+
+		},{
+		path:'/user-course',
+			component:Usercourse
+
 		},
+
 		{
 			path: '/login',
 			component:Login
 		},
+        {
+            path: '/manager',
+            component:Manager
+        },
 		,{
 				path: '/teacher',
 				component:Tea,
@@ -46,12 +63,8 @@ export default new Router({
             path:"tea-question",
             name:'tea-question',
             component:Teaquestion
-
-
           }
-
-
-				]
+                ]
 
 
 
@@ -85,14 +98,15 @@ export default new Router({
 					component:Stdquestion
 
 
-				}
-				,{
+				},
+                {
 
-					path:"stu-set",
-					component:Stdset
+                    path:"stu-tail",
+                    name:'stu-tail',
+                    component:Stdtail
 
 
-				}
+                }
 
 			]
 

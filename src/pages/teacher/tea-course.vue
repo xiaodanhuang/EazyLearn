@@ -14,10 +14,22 @@
 				</li>
 			</div>
 		</div>
-		<el-upload class="upload-course"drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
-	 	 	<i class="el-icon-upload"></i>
-  			<div class="el-upload__text">点击上传课件</em></div>
-		</el-upload>
+		<div class="upload-course">
+			<el-upload class="upload-demo" action="":on-change="handleChange" :file-list="fileList3">
+				<el-button size="small" type="primary">点击上传</el-button>
+				<div slot="tip" class="el-upload__tip">只能上传pdf/PPT/word文件</div>
+			</el-upload>
+			<el-button type="text" @click="dialoglogin = true">发布公告</el-button>
+			<el-dialog title="" :visible.sync="dialoglogin" size="tiny" :before-close="handleClose">
+				<span class="logo-small"></span>
+				<el-input placeholder="小蛋黄"icon="edit"></el-input>
+				<span slot="footer" class="dialog-footer">
+    			<el-button @click="dialoglogin = false">取 消</el-button>
+    			<el-button type="primary" @click="dialoglogin = false">安全退出</el-button>
+  			</span>
+			</el-dialog>
+		</div>
+
 	</div>
 </template>
 
@@ -26,13 +38,18 @@
 	  		name:'tea-course',
     data() {
       return {
+          dialoglogin: false,
           courseware:[
             '课件一',
             '课件二',
             '课件三',
             '课件四'
           ]
-      ,
+      ,fileList3: [{
+              name: 'food.pdf',
+              url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
+              status: 'finished'
+          }],
       	 data: [{
           label: 'JAVA疯狂讲义',
           children: [{
@@ -53,6 +70,9 @@
           label: 'label'
         },
     methods: {
+        handleChange(file, fileList) {
+            this.fileList3 = fileList.slice(-3);
+        },
     	handleNodeClick(data) {
         console.log(data);
      },
@@ -61,7 +81,15 @@
       },
       handlePreview(file) {
         console.log(file);
-      }
+      },
+		handleClose(done) {
+            console.log(1);
+            this.$confirm('确认关闭？')
+                .then(_ => {
+                    done();
+                })
+                .catch(_ => {});
+        }
     }
   }
     }}
@@ -74,6 +102,16 @@
 	.upload-course{
 		margin-top:30px;
 		float:left;
+		.logo-small {
+			background-position: 5px -20px;
+			background-repeat: no-repeat;
+			width: 200px;
+			height: 40px;
+			background-image: url(../../assets/logo-small.png);
+			display: block;
+			margin: 0 auto;
+			margin-bottom: 10px;
+		}
 	}
 	.loaded-course {
     	float: left;

@@ -8,7 +8,6 @@
 			<el-tab-pane label="课程"index="0"name="first"></el-tab-pane>
 			<el-tab-pane label="作业"index="1"name="second"></el-tab-pane>
 			<el-tab-pane label="线上答疑" index="2"name="third"></el-tab-pane>
-			
 			<el-input placeholder="请输入关键字搜索" icon="search"></el-input>
 		</el-tabs>
 		<el-dialog title="" :visible.sync="dialoglogin" size="tiny" :before-close="handleClose">
@@ -43,7 +42,7 @@
 				'/index/stu-course',
 				'/index/stu-work',
 				'/index/stu-question',
-				'/index/stu-set'
+				'/user-set'
 				]
 				
 				
@@ -55,6 +54,11 @@
          this.$router.push(this.url[tab.index]);
     },
     go: function(index) {
+			     if(index==0){
+                     this.$router.push('/user-course');
+                     reuturn;
+
+				 }
 			this.$router.push(this.url[index]);
 			
 		}
@@ -75,21 +79,21 @@
 
 <style lang="scss" rel="stylesheet/scss" type="text/css">
 	.f-head {
-		    position: fixed;
-    width: 100%;
-    height: 60px;
-    background-color: #272c2f;
-    padding-top: 7.5px;
-    box-sizing: border-box;
+		position: fixed;
+		width: 100%;
+		height: 60px;
+		background-color: #272c2f;
+		padding-top: 7.5px;
+		box-sizing: border-box;
 		.el-tabs__item.is-active,
 		.el-tabs__active-bar {
 			color: #fff;
 			background-color: transparent;
 		}
 		.el-tabs__item:hover {
-    color: #fff;
-    cursor: pointer;
-}
+			color: #fff;
+			cursor: pointer;
+		}
 		.head-left {
 			background-position: 0;
 			background-repeat: no-repeat;
@@ -110,16 +114,13 @@
 				margin-right: 20px;
 			}
 		}
-		.el-tabs__header,
-		.el-tabs .el-input,
-		.el-tabs__content {
+		.el-tabs__header, .el-tabs .el-input, .el-tabs__content {
 			width: 300px;
 			display: inline-block;
 			border: none;
 			border: 0px;
 		}
-		.el-tabs .el-input__inner,
-		.el-tabs .el-input__inner:focus {
+		.el-tabs .el-input__inner, .el-tabs .el-input__inner:focus {
 			background-color: #464b4d;
 			border: none;
 			color: #fff;
@@ -136,60 +137,63 @@
 		}
 		#user-favition{
 			width: 40px;
-    border-radius: 20px;
-    margin-top: 5px;
+			border-radius: 20px;
+			margin-top: 5px;
 		}
 		.el-dialog--tiny {
 			top:70px;
-    width: 30%;
-    right: -220px;
-    .user-category{
-    	background: #f3f5f7;
-    	width:100px;
-    	display:inline-block;
-    	height:25px;
-    	line-height:25px;
-    	span{
-    		    position: relative;
-    top: -7px;
-    	}
-    }
-}
+			width: 30%;
+			right: -220px;
+			.user-category{
+				background: #f3f5f7;
+				width:100px;
+				display:inline-block;
+				height:25px;
+				line-height:25px;
+				span{
+					position: relative;
+					top: -7px;
+				}
+			}
+		}
 		.el-dialog_wrapper {
 			z-index: 100000!important;
 		}
+		.user-list{
+			 cursor:pointer;
+		 }
 		.user-course{
-    width: 25px;
-    height: 25px;
-    background-image:url(../../assets/btn-icon.png);
-    background-position: -4px -1360px;
-    display: inline-block;
-    border-radius: 15px;
-}
-.user-work {
-    width: 25px;
-    height: 25px;
-    background-image: url(../../assets/btn-icon.png);
-    background-position: -4px -849px;
-    display: inline-block;
-    border-radius: 15px;
-}
-.user-question{
-    width: 25px;
-    height: 25px;
-    background-image: url(../../assets/btn-icon.png);
-    background-position: -4px -1199px;
-    display: inline-block;
-    border-radius: 15px;
-}
-.user-set {
-    width: 25px;
-    height: 25px;
-    background-image: url(../../assets/btn-icon.png);
-    background-position: -4px -1744px;
-    display: inline-block;
-    border-radius: 15px;
-}
+			width: 25px;
+			height: 25px;
+			background-image:url(../../assets/btn-icon.png);
+			background-position: -4px -1360px;
+			display: inline-block;
+			border-radius: 15px;
+		}
+		.user-work {
+			width: 25px;
+			height: 25px;
+			background-image: url(../../assets/btn-icon.png);
+			background-position: -4px -849px;
+			display: inline-block;
+			border-radius: 15px;
+		}
+		.user-question{
+			width: 25px;
+			height: 25px;
+			background-image: url(../../assets/btn-icon.png);
+			background-position: -4px -1199px;
+			display: inline-block;
+			border-radius: 15px;
+		}
+		.user-set {
+			width: 25px;
+			height: 25px;
+			background-image: url(../../assets/btn-icon.png);
+			background-position: -4px -1744px;
+			display: inline-block;
+			border-radius: 15px;
+		}
 		.el-dialog {
 			.buttons {
 				margin: 20px 0px 20px 0px;
@@ -213,17 +217,16 @@
 			outline: 0;
 			border-color: #272c2f;
 		}
-	.el-dialog__close:hover {
-  color: #272C2F;
-}
-.el-button--text {
-	color: #8391a5;
-}
-.el-button--text:hover {
-	color: #fff;
-}
+		.el-dialog__close:hover {
+		  	color: #272C2F;
+		}
+		.el-button--text {
+			color: #8391a5;
+		}
+		.el-button--text:hover {
+			color: #fff;
+		}
 	}
-	
 	.v-modal {
 		z-index: -1!important;
 		background-position: 0;
