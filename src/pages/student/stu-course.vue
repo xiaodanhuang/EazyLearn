@@ -7,29 +7,21 @@
 			{{tag.name}}
 		</el-tag>
 		
-	</div>	
-	<div class="Tab">
-		<span class="Tab-list" >模式:</span >
-		<el-tag v-for="tag in model":key="model.name" :closable="true":type="tag.type">
-			{{tag.name}}
-		</el-tag>
-		
 	</div>
-	<el-tabs v-model="activeName" >
-    <el-tab-pane label="综合排序" name="first"></el-tab-pane>
-    <el-tab-pane label="最新" name="second"></el-tab-pane>
-    <el-tab-pane label="最热" name="third"></el-tab-pane>
-    <el-tab-pane label="可报名" name="fourth"></el-tab-pane>
+	<el-tabs v-model="activeName" @tab-click="sortBy(activeName)" >
+    <el-tab-pane label="综合排序" name="0"></el-tab-pane>
+    <el-tab-pane label="最新" name="1"></el-tab-pane>
+    <el-tab-pane label="最热" name="2"></el-tab-pane>
  </el-tabs>
 	</div>
 		<div class="course-list">
 			<ul>
-				<li   v-for="item in coursename">
-					<a class="course-detail" v-for="item in coursename">
-						<img src="../../assets/course-softdesign.jpg" class="course-pic"/>
-						<p class="course-name">{{item.name}}</p>
-						<p class="course-teacher"><span>教师:</span><span>{{item.teacher}}</span></p>
-						<p class="course-time"><span>课程时间:</span><span>{{item.time}}</span></p>
+				<li v-for="item in courseData">
+					<a class="course-detail">
+						<img v-bind:src="item.src" class="course-pic"/>
+						<p class="course-name">{{item.courseName}}</p>
+						<p class="course-teacher"><span>教师:</span><span>{{item.courseTeacher}}</span></p>
+						<p class="course-time"><span>课程时间:</span><span>{{item.courseTime}}</span></p>
 						<i class="course-into"@click="courseInto()"></i>
 					</a>
 				</li>
@@ -45,29 +37,20 @@
 		name: 'stu-course',
 		data() {
 			return {
-				 activeName: 'first',
-				coursename: [
-					{name:'HTML5秘籍',teacher:'吴亦凡',time:'随意学'},
-					{name:'JAVA编程思想',teacher:'郑帝元',time:'2017.05.10-2017.12.20'},
-					{name:'MySQL学习进阶',teacher:'郑基石',time:'随意学'}
+				activeName:0,
+				courseData: [],
+				urlList:[
+				    'stuByCourse',
+					'stuCourseByTime' ,
+					'stuCourseByStu',
 				],
-				
+
 				
 				
 				tags: [
-		{ name: '全部', type: 'danger' ,url:'../../assets/course-softdesign.jpg'},
+		          { name: '全部', type: 'danger' ,url:'../../assets/course-softdesign.jpg'},
           { name: '前端', type: 'gray'},
-          { name: '后台', type: 'gray'},
-          { name: '安卓', type: 'gray'},
-          { name: 'ios', type: 'gray'  },
-          { name: '大数据', type:'gray'},
-          { name: '网络安全', type: 'gray'},
-           { name: '其他', type: 'gray' }
-        ],
-        model: [
-		{ name: '任意学', type: 'danger' },
-        { name: '定时开班', type: 'gray'}
-         
+          { name: '后端', type: 'gray'},
         ],
          list: [
 		{ name: '综合排序', type: 'danger' },
@@ -79,16 +62,51 @@
 			}
 		},
 		mounted: function() {
-			var height = $(".stu-course").height();
-	    $(".course-list").height(height - 177);
-      $(".el-tag").click(function(){
-    	$(this).toggleClass("el-tag--danger");
+            this.$nextTick(function () {
+                var $this=this;
+                $.ajax({
+                    url:'/stuByCourse',
+                    type:'post',
+                    dataType: 'json',
+                    success:function(data){
+                        $this.courseData=data;
+                        console.log(data);
+
+                    },
+                    error:function(){
+
+                    }
+
+                })
+            })
+		    var height = $(".stu-course").height();
+	        $(".course-list").height(height - 177);
+            $(".el-tag").click(function(){
+    	    $(this).toggleClass("el-tag--danger");
     	
   
 });
 	
 		},
 		methods: {
+            sortBy(name) {
+                var $this=this;
+                $.ajax({
+                    url:'/'+this.urlList[name],
+                    type:'post',
+                    dataType: 'json',
+                    success:function(data){
+                        $this.courseData=data;
+                        console.log(data);
+
+                    },
+                    error:function(){
+                        console.log('error');
+
+                    }
+
+                })
+            },
 		    courseInto(){
 		        this.$router.push('/index/stu-tail');
 
@@ -146,6 +164,10 @@
 		width:100%;
 		ul{
 			list-style: none;
+		     text-align:left;
+	        li {
+		       display: inline-block;
+			}
 		}
 		.course-pic{
 			width:224px;

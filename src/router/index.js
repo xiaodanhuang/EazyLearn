@@ -3,6 +3,9 @@ import Router from 'vue-router'
 import Index from '@/pages/index'
 import Login from  '@/pages/Login'
 import Manager from  '@/pages/manager'
+import Managertea from  '@/pages/manager/manager-tea'
+import Managerstu from  '@/pages/manager/manager-stu'
+import Managercourse from  '@/pages/manager/manager-course'
 import Userset from '@/pages/user-set'
 import Usercourse from '@/pages/user-course'
 import Stdcourse from  '@/pages/student/stu-course'
@@ -40,7 +43,28 @@ export default new Router({
 		},
         {
             path: '/manager',
-            component:Manager
+            component:Manager,
+            children: [
+                {
+
+                    path:"manager-tea",
+                    name:'manager-tea',
+                    component:Managertea
+                },
+                {
+
+                    path:"manager-stu",
+                    name:'manager-stu',
+                    component:Managerstu
+                },
+                {
+
+                    path:"manager-course",
+                    name:'manager-course',
+                    component:Managercourse
+                },
+
+			]
         },
 		,{
 				path: '/teacher',

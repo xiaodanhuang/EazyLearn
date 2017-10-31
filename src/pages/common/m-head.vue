@@ -1,14 +1,17 @@
 <template>
-	<div class="f-head">
+	<div class="m-head">
 		<div class="head-left"></div>
 		<div class="head-right">
-			<el-button type="text" @click="dialoglogin = true"><img id="user-favition" src="../../assets/avatar.png" /></el-button>
+			<el-button type="text" @click="dialoglogin = true">
+				<img id="user-favition" src="../../assets/avatar.png" />
+			</el-button>
 		</div>
 		<el-tabs v-model="activeName" @tab-click="handleClick">
-			<el-tab-pane label="教师资源"index="0"name="first"></el-tab-pane>
-			<el-tab-pane label="学生资源"index="1"name="second"></el-tab-pane>
+			<el-tab-pane label="教学资源"index="0"name="first"></el-tab-pane>
+			<el-tab-pane label="教师资源"index="1"name="second"></el-tab-pane>
+			<el-tab-pane label="学生资源"index="2"name="third"></el-tab-pane>
 		</el-tabs>
-		<el-dialog title="" :visible.sync="dialoglogin" size="tiny" :before-close="handleClose">
+		<el-dialog title="" :visible.sync="dialoglogin" size="tiny" >
 			<span class="logo-small"></span>
 			<div class="user-list">
 				<div class="user-category"@click="go(3)"><i class="user-set"></i><span>我的设置</span></div>
@@ -18,24 +21,21 @@
     	<el-button type="primary" @click="dialoglogin = false">安全退出</el-button>
   			</span>
 		</el-dialog>
-
-
 	</div>
 </template>
 
 <script>
 	export default {
-		name: 'f-head',
+		name: 'm-head',
 		data() {
 			return {
 				activeName: 'first',
 				dialoglogin: false,
 				dialogin: false,
 				url:[
-				'/index/stu-course',
-				'/index/stu-work',
-				'/index/stu-question',
-				'/user-set'
+				    '/manager/manager-course',
+				    '/manager/manager-tea',
+				    '/manager/manager-stu'
 				]
 				
 				
@@ -44,34 +44,22 @@
 		components: {},
 		methods: {
 			 handleClick(tab) {
-         this.$router.push(this.url[tab.index]);
-    },
-    go: function(index) {
+        		 this.$router.push(this.url[tab.index]);
+			 },
+   			 go: function(index) {
 			     if(index==0){
                      this.$router.push('/user-course');
-                     reuturn;
-
+                     return 0;
 				 }
-			this.$router.push(this.url[index]);
-			
-		}
-			
-		},
-		handleClose(done) {
-			console.log(1);
-			this.$confirm('确认关闭？')
-				.then(_ => {
-					done();
-				})
-				.catch(_ => {});
-		}
-		
+			     this.$router.push(this.url[index]);
+			 }
+        }
 		
 	}
 </script>
 
 <style lang="scss" rel="stylesheet/scss" type="text/css">
-	.f-head {
+	.m-head {
 		position: fixed;
 		width: 100%;
 		height: 60px;

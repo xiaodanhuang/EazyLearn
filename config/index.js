@@ -23,11 +23,76 @@ module.exports = {
   },
   dev: {
     env: require('./dev.env'),
-    port: 8080,
+    port: 9604,
     autoOpenBrowser: true,
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+        '/loginBystuName': {
+            target: 'http://127.0.0.1:8080/api/queryBystuName',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/loginBystuName': '/'
+            }
+        },
+        '/loginByteaName': {
+            target: 'http://127.0.0.1:8080/api/queryByteaName',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/loginByteaName': '/'
+            }
+        },
+        '/loginBymanagerName': {
+            target: 'http://127.0.0.1:8080/api/queryBymanagerName',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/loginBymanagerName': '/'
+            }
+        },
+        '/manageByTeacher': {
+            target: 'http://127.0.0.1:8080/api/manageByTeacher',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageByTeacher': '/'
+            }
+        },
+        '/manageByCourse': {
+            target: 'http://127.0.0.1:8080/api/manageByCourse',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageByCourse': '/'
+            }
+        },
+        '/manageByStudent': {
+            target: 'http://127.0.0.1:8080/api/manageByStudent',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageByStudent': '/'
+            }
+        },
+        '/stuByCourse': {
+            target: 'http://127.0.0.1:8080/api/stuByCourse',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/stuByCourse': '/'
+            }
+        },
+        '/stuCourseByTime': {
+            target: 'http://127.0.0.1:8080/api/stuCourseByTime',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/stuCourseByTime': '/'
+            }
+        },
+        '/stuCourseByStu': {
+            target: 'http://127.0.0.1:8080/api/stuCourseByStu',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/stuCourseByStu': '/'
+            }
+        }
+
+    },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
     // (https://github.com/webpack/css-loader#sourcemaps)
