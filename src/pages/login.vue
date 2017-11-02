@@ -38,7 +38,7 @@
 				routerUrl:[
                     '/index/stu-course',
                     '/teacher/tea-course',
-					'/manager/manager-tea'
+					'/manager/manager-course'
 
 			  ]
 			};

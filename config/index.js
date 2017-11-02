@@ -90,6 +90,69 @@ module.exports = {
             pathRewrite: {
                 '^/stuCourseByStu': '/'
             }
+        },
+        '/manageTeacherDelete': {
+            target: 'http://127.0.0.1:8080/api/manageTeacherDelete',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageTeacherDelete': '/'
+            }
+        },
+        '/manageCourseDelete': {
+            target: 'http://127.0.0.1:8080/api/manageCourseDelete',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageCourseDelete': '/'
+            }
+        },
+        '/manageStudentDelete': {
+            target: 'http://127.0.0.1:8080/api/manageStudentDelete',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageStudentDelete': '/'
+            }
+        },
+        '/manageCourseUpdate': {
+            target: 'http://127.0.0.1:8080/api/manageCourseUpdate',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageCourseUpdate': '/'
+            }
+        },
+        '/manageTeacherUpdate': {
+            target: 'http://127.0.0.1:8080/api/manageTeacherUpdate',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageTeacherUpdate': '/'
+            }
+        },
+        '/manageStudentUpdate': {
+            target: 'http://127.0.0.1:8080/api/manageStudentUpdate',
+            changeOrigin:true,
+            pathRewrite: {
+                '^/manageStudentUpdate': '/'
+            }
+        },
+        '/manageCourseAdd': {
+            target: 'http://127.0.0.1:8080/api/manageCourseAdd',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/manageCourseAdd': '/'
+            }
+        },
+        '/manageTeacherAdd': {
+            target: 'http://127.0.0.1:8080/api/manageTeacherAdd',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/manageTeacherAdd': '/'
+            }
+        },
+        '/manageStudentAdd': {
+            target: 'http://127.0.0.1:8080/api/manageStudentAdd',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/manageStudentAdd': '/'
+            }
         }
 
     },
