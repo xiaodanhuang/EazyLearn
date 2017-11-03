@@ -153,6 +153,19 @@ module.exports = {
             pathRewrite: {
                 '^/manageStudentAdd': '/'
             }
+        },
+        '/teacherByCourse': {
+            target: 'http://127.0.0.1:8080/api/teacherByCourse',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/teacherByCourse': '/'
+            }
+        },'/teacherByChapter': {
+            target: 'http://127.0.0.1:8080/api/teacherByChapter',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/teacherByChapter': '/'
+            }
         }
 
     },
