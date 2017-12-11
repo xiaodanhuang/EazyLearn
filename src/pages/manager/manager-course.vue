@@ -1,13 +1,10 @@
 <template>
 	<div class="manager-course">
 		<nav>
-			<el-button>导入</el-button>
 			<el-button @click="addCourse()">添加</el-button>
-			<el-button @click="deleteByCheck()">删除</el-button>
 		</nav>
-		<el-table ref="courseTable" :data="courseData" border style="width: 100%">
+		<el-table  max-height="400"  ref="courseTable" :data="courseData" border style="width: 100%">
 			<el-table-column type="index" label="序号" width="80"></el-table-column>
-			<el-table-column type="selection" width="55"align="center"></el-table-column>
 			<el-table-column prop="id"label="课程号" align="center"width="80"></el-table-column>
 			<el-table-column prop="courseName" label="课程" align="center"></el-table-column>
 			<el-table-column prop="category" label="类别" align="center"></el-table-column>
@@ -25,8 +22,13 @@
 		<el-dialog title="" :visible.sync="editData" size="tiny"  :before-close="handleClose">
 			<span class="logo-small"></span>
 			<div class="user-list">
-				<el-input v-model="postData.username" placeholder="请输入课程名"></el-input>
-				<el-input v-model="postData.time" placeholder="请输入教学时间"></el-input>
+				<el-input v-model="postData.courseName" placeholder="请输入课程名"></el-input>
+				<el-date-picker
+						v-model="postData.courseTime"
+						type="daterange"
+						placeholder="请输入教学时间">
+				</el-date-picker>
+
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="editFalse()">取 消</el-button>
@@ -41,21 +43,17 @@
 				<el-input v-model="insertData.category" placeholder="请输入课程类别"></el-input>
 				<el-input v-model="insertData.teacherNum" placeholder="请输入教师号"></el-input>
 				<el-input  v-model="insertData.courseTeacher"placeholder="请输入教师名"></el-input>
-				<el-input v-model="insertData.courseTime" placeholder="请输入教学时间"></el-input>
+				<el-date-picker
+						v-model="insertData.courseTime"
+						type="daterange"
+						placeholder="请输入教学时间">
+				</el-date-picker>
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="editFalse()">取 消</el-button>
     	<el-button type="primary" @click="insertCourse()">确认修改</el-button>
   			</span>
 		</el-dialog>
-		<div class="block">
-			<el-pagination
-					:page-sizes="[100, 200, 300, 400]"
-					:page-size="100"
-					layout="total, sizes, prev, pager, next, jumper"
-					:total="400">
-			</el-pagination>
-		</div>
 	</div>
 </template>
 
@@ -64,6 +62,7 @@
 		name: 'manager-course',
 		data() {
             return {
+                number:'',
                 editData:false,
 				addData:false,
 				postData:{
@@ -94,6 +93,8 @@
                     dataType: 'json',
                     success:function(data){
                         $this.courseData=data;
+                        $this.number=data.length;
+
                     },
                     error:function(){
 
@@ -108,21 +109,40 @@
                     this.postData.courseName=row.courseName,
                     this.postData.teacherNum=row.teacherNum,
                     this.postData.category=row.category,
-                    this.postData.courseTeacher=row.courseTeacher,
-                    this.postData.courseTime=row.courseTime;
+                    this.postData.courseTeacher=row.courseTeacher;
+
             },
             editFalse(){
 				this.editData=false;
                 this.addData=false;
+                this.insertData={
+                    id:'',
+                        courseName:'',
+                        category:'',
+                        teacherNum:'',
+                        courseTeacher:'',
+                        courseTime:''
+                }
 
 			},
             handleClose() {
 				this.editData=false;
                 this.addData=false;
+                this.insertData={
+                    id:'',
+                    courseName:'',
+                    category:'',
+                    teacherNum:'',
+                    courseTeacher:'',
+                    courseTime:''
+                }
 
 			},
             handlePost(){
                 var $this=this;
+                this.postData.courseTime= new Date(this.postData.courseTime[0]).Format("yyyy.MM.dd")+'-'+
+                    new Date(this.postData.courseTime[1]).Format("yyyy.MM.dd");
+
                 $.ajax({
                     url:'/manageCourseUpdate',
                     data:{
@@ -138,12 +158,15 @@
                     type:'post',
                     success:function(data){
                         $this.courseData=data;
-                        this.editData=false;
+                        $this.editData=false;
 
 
                     },
                     error:function(){
                         console.log('update false');
+                        $this.editData=false;
+
+
                     }
 
                 });
@@ -173,6 +196,8 @@
 			},
             insertCourse(){
                 var $this=this;
+				this.insertData.courseTime= new Date(this.insertData.courseTime[0]).Format("yyyy.MM.dd")+'-'+
+                          new Date(this.insertData.courseTime[1]).Format("yyyy.MM.dd");
                 $.ajax({
                     url:'/manageCourseAdd',
                     data:{
@@ -189,6 +214,14 @@
                     success:function(data){
                         $this.courseData=data;
                         $this.addData=false;
+                        $this.insertData={
+                            id:'',
+                                courseName:'',
+                                category:'',
+                                teacherNum:'',
+                                courseTeacher:'',
+                                courseTime:''
+                        }
 
 
                     },
@@ -200,9 +233,9 @@
 
 
 
+
             },
             deleteByCheck(rows){
-                console.log(rows);
 
             }
         }
@@ -217,8 +250,15 @@
 			text-align:left;
 			padding:20px;
 		}
+		.el-date-picker{
+			width:100%;
+		}
 		.el-input {
 			margin-bottom:10px;
+		}
+		.el-range-editor.el-input__inner {
+			width:100%;
+		
 		}
 		.block {
 			position: fixed;

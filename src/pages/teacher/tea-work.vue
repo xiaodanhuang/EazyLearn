@@ -1,200 +1,236 @@
 <template>
 	<div class="tea-work">
-    <nav>
-      <a class="work-new"v-bind:class="{ workchoose: workchoose}" @click="workchoose=1">创建作业</a>
-      <a class="work-hot"v-bind:class="{workchoose: !workchoose }"@click="workchoose=0">已下发的作业</a>
-    </nav>
-    <div class=" work-make" v-if="workchoose">
-      <div class="work-content">
-        <div class="work-title">
-          <div class="work-kind">试卷题目</div>
-          <el-input placeholder="请填写题目" icon="edit"></el-input>
-          <el-button style="margin-top: 12px;">保存</el-button>
-        </div>
-        <div class="work-radio">
-          <div class="work-kind">单选题目</div>
-          <el-input placeholder="请填写题目" icon="edit"></el-input>
-          <el-input placeholder="选项" icon="edit"></el-input>
-          <a>x</a>
-          <el-input placeholder="选项"icon="edit"></el-input>
-          <a>x</a>
-          <div class="el-input new-radio">新建选项</div>
-          <el-button style="margin-top: 12px;">保存</el-button>
-        </div>
-        <div class="work-checkbox">
-          <div class="work-kind">多选题目</div>
-          <el-input placeholder="请填写题目" icon="edit"></el-input>
-          <el-input placeholder="选项" icon="edit"></el-input>
-          <a>x</a>
-          <el-input placeholder="选项"icon="edit"></el-input>
-          <a>x</a>
-          <div class="el-input new-radio">新建选项</div>
-          <el-button style="margin-top: 12px;">保存</el-button>
-        </div>
-        <div class="work-check">
-          <div class="work-kind">判断题目</div>
-          <el-input placeholder="请填写题目" icon="edit"></el-input>
-          <el-button style="margin-top: 12px;">保存</el-button>
-        </div>
-        <div class="work-input">
-          <div class="work-kind">填空</div>
-          <el-input placeholder="请填写题目" icon="edit"></el-input>
-          <el-button style="margin-top: 12px;">保存</el-button>
-        </div>
-        <div class="work-input">
-          <div class="work-true">判断</div>
-          <el-input placeholder="请填写题目" icon="edit"></el-input>
-          <el-button style="margin-top: 12px;">保存</el-button>
-        </div>
-        <div class="work-think">
-          <div class="work-kind">思考题</div>
-          <el-input placeholder="请填写题目" icon="edit"></el-input>
-          <el-button style="margin-top: 12px;">保存</el-button>
-        </div>
-        <el-button style="margin:0 auto;margin: 12px 0px 10px 0px;">保存为作业</el-button>
+      <el-tabs v-model="nav" type="card">
+        <el-tab-pane label="创建作业" name="first">
+            <form id="form" method ="post" enctype ="multipart/form-data">
+              <input name="teacherNum" type="hidden" v-model="courseForm.teacherNum" />
 
-      </div>
-    </div>
-    <div class="work-made" v-if="!workchoose">
-      <div class="home-list">
-        <ul>
-          <li>
-            <a class="work-detail">
-              <P>JAVA阶段测试(一)</P>
-              <img src="../../assets/work-java.png" />
-              <p><span>截止时间:</span><span>2017.05.06</span></p>
-              <el-rate v-model="value5" disabled show-text text-color="#ff9900" text-template="{value}"></el-rate>
-            </a>
-          </li>
-        </ul>
-      </div>
+              <input name="courseId" type="hidden" v-model="courseForm.courseId"/>
 
-    </div>
+              <el-input name="courseName"placeholder="请填写课程名称"v-model="courseForm.courseName">
+              </el-input>
+              <el-input name="workName"placeholder="请填写题目" v-model="courseForm.workName">
+              </el-input>
+                <div class="el-upload__text">
+                  <i class="el-icon-upload"></i>
+                  <input type="file" name="file"  accept=".pdf,.pptx"/>
+                </div>
+              <el-button native-type="submit" style="margin-top: 12px;" @click="saveButton()">保存</el-button>
+          </form>
+        </el-tab-pane>
+        <el-tab-pane label="已下发作业" name="second" @tab-click="homeWorked()">
+          <div v-if="ishomeWork"class="no-data"></div>
+          <div v-if="!ishomeWork"class="course-list">
+            <ul>
+              <li v-for="item in courseData">
+                <a class="course-detail">
+                  <img src="../../assets/course-detail.png" class="course-pic"/>
+                  <p class="course-name">{{item.filename}}</p>
+                  <p class="course-teacher"><span>课程:</span><span>{{item.courseName}}</span></p>
+                  <a :href="'/homeDownLoad?filename='+item.src"><i class="el-icon-download"></i></a>
+                  <i class="el-icon-delete" @click="workDelete(item.id,item.src)"></i>
+                </a>
+              </li>
+            </ul>
+
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+
 
   </div>
 </template>
-
 <script>
   export default {
     name: 'tea-work',
     data() {
       return {
-        checked:false,
-        workchoose: true,
-        input2: '',
-        value5: 3.7,
-        workTemplate:[
-          '单选题',
-          '多选题',
-          '填空题',
-          '判断题',
-          '思考题'
-        ]
+          ishomeWork:1,
+          nav:'first',
+          courseList:[],
+          courseData: [{src:'',filename:'测试1',courseName:'数据结构'}],
+          courseForm:{
+              teacherNum:'',
+              courseId:'',
+              courseName:'',
+              workName:''
+          }
+
       }
     },
     mounted: function() {
       var height=$(".f-content").height();
       $(".work-make").height(height-60);
-
-
+        this.$nextTick(function () {
+            var $this=this;
+            this.teacherNum=this.$store.state.teacherId;
+            let param = new URLSearchParams();
+            param.append("teacherNum",this.$store.state.teacherId);
+            this.$axios.post('/teacherByCourse',param).then(function (data) {
+                data=data.data;
+                $this.courseList=data;
+            }).catch(function (data) {
+                console.log(data);
+            });
+            this.$axios.post('/homeWorked',param).then(function (data) {
+                data=data.data;
+                $this.courseData=data;
+                if($this.courseData.length>0){
+                    $this.ishomeWork=0;
+                }
+            }).catch(function (data) {
+                console.log('homeworked');
+            });
+        })
     },
-    methods: {
-      handleClose(tag) {
-        console.log(1);
 
-      }
+    methods: {
+        homeWorked:function(){
+            console.log("ahajjajaj");
+        },
+        workDelete:function(id,filename){
+            console.log(id)
+            var $this=this;
+            $.ajax({
+                url:'/workDelete',
+                type:'post',
+                data:{
+                    id:id,
+                    filename:filename,
+                    teacherNum:this.$store.state.teacherId
+                },
+                dataType: 'json',
+                success:function(data){
+                    $this.courseData=data;
+                    if($this.courseData.length>0){
+                        $this.ishomeWork=0;
+                    }
+                },
+                error:function(data){
+                    console.log('作业删除失败');
+                }
+            });
+        },
+        saveButton:function(){
+            for(let i=0;i<this.courseList.length;i++){
+                if(this.courseForm.courseName==this.courseList[i].courseName){
+                    this.courseForm.courseId=this.courseList[i].id;
+                }
+            }
+            this.courseForm.teacherNum=this.$store.state.teacherId;
+            var $this=this;
+            var  options={
+                url:'/upLoadWork', //form提交数据的地址
+                type:'post', //form提交的方式(method:post/get)
+                success:function(data){
+                    var  h = $this.$createElement;
+                    $this.$notify.error({
+                        title: '',
+                        message: h('i', { style: 'color: teal'}, '已发布作业'),
+                        position: 'right-bottom',
+                        offset: 300,
+                        duration:1000
+                    });
+                    $this.courseForm={
+                        teacherNum:'',
+                            courseId:'',
+                            courseName:'',
+                            workName:''
+                    }
+                    $this.courseData=data;
+                    if($this.courseData.length>0){
+                        $this.ishomeWork=0;
+                    }
+
+
+                }, //提交成功后执行的回调函数
+                error:function(){
+                    console.log('false');
+            },
+                dataType: 'json',//服务器返回数据类型
+                clearForm:true, //提交成功后是否清空表单中的字段值
+                restForm:true, //提交成功后是否重置表单中的字段值，即恢复到页面加载时的状态
+                timeout:6000 //设置请求时间，超过该时间后，自动退出请求，单位(毫秒)。
+            };
+            console.log(this.courseForm)
+           $("#form").ajaxForm(options);
+
+
+        }
+
     }
 
   }
 </script>
 
-<style lang="scss" rel="stylesheet/scss" type="text/css">
-  .teacher{
-    overflow:auto;
-    padding-bottom: 10px;
-  }
-  .tea-work {
-    position: relative;
-    overflow: auto;
-    z-index: 1;
-
+<style lang="scss" rel="stylesheet/scss" type="text/scss">
     .displayNone {
-      display: none;
+        display: none;
     }
-    li {
-      list-style: none;
+  .tea-work{
+    width:100%;
+    height:100%;
+    .el-input{
+        width:60%;
     }
-    nav {
-      width: 100%;
-      border-bottom: 1px solid #000000;
-      height: 50px;
-      margin-top: 10px;
-      border: 1px solid #e0e0e0;
-
-      .work-new, .work-hot {
-        display: inline-block;
-        float: left;
-        line-height: 50px;
-        cursor: pointer;
-        width: 100px;
-      }
-
-      .workchoose, .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__inner:hover {
-        border: none;
-        border-bottom-color: #e0e0e0;
-        color: #8391a5;
-        width: 100px;
-      }
+    .el-upload__text{
+        margin-top:20px;
+    }
+    .no-data{
+        width:200px;
+        height:200px;
+        background:url("../../assets/no-data.png");
+        background-position: -400px -300px;
+        background-repeat: no-repeat;
+        margin:0 auto;
+    }
+    form{
+      margin-top:10%;
+        .el-input{
+            margin-bottom:20px;
+        }
 
     }
-
-    .work-content {
-      height: 100%;
-      margin-left: 200px;
+    .course-list{
+      width:100%;
+      position:relative;
+      overflow:auto;
       text-align: left;
-      overflow: auto;
-      position: relative;
-
-      .work-kind {
-        text-align: left;
-        padding: 10px;
+      height:600px;
+      ul{
+        list-style: none;
+        text-align:left;
+        margin:auto 0;
+        li {
+          display: inline-block;
+          position: relative;
+          text-align: center;
+          width:25%;
+        }
       }
-
-      .el-input {
-        width: 80%;
-        margin-top: 20px;
+      .course-pic{
+        width:224px;
+        height:125px;
 
       }
-
-      .new-radio {
+      p{
+        margin:10px;
+      }
+      .course-detail{
         display: inline-block;
-        zoom: 1;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
-        box-sizing: border-box;
-        border: 1px dashed #e0e0e0;
-        padding: 6px 10px;
-        background: #fafafa;
-        color: #b2b2b2;
-        cursor: pointer;
-      }
+        padding: 10px;
+        margin:10px;
+        border: 2px solid #F5F5F5;
+        position: relative;
+        font-weight:bold;
 
-      .work-made {
+        i{
 
-        .home-list {
-
-          li {
-            list-style: none;
-            .work-detail {
-              width: 217px;
-              height: 262px;
-              display: inline-block;
-              border: 2px;
-            }
-          }
         }
       }
     }
+
+
   }
 
 

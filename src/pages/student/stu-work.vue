@@ -1,23 +1,19 @@
 <template>
 	<div class="stu-work">
-		<nav>
-			<a class="work-new"v-bind:class="{ workchoose: workchoose}" @click="workchoose=1">最新</a>
-			<a class="work-hot"v-bind:class="{workchoose: !workchoose }"@click="workchoose=0">最热</a>
-			<a class="work-todo">
-				<el-checkbox v-model="checked">只看没做过的</el-checkbox>
-			</a>
-		</nav>
-		<div class="home-list">
+		<div v-if="ishomeWork"class="no-data"></div>
+		<div v-if="!ishomeWork"class="course-list">
 			<ul>
-				<li>
-					<a class="work-detail">
-						<P>JAVA阶段测试(一)</P>
-						<img src="../../assets/work-java.png" />
-						<p><span>截止时间:</span><span>2017.05.06</span></p>
-						<el-rate v-model="value5" disabled show-text text-color="#ff9900" text-template="{value}"></el-rate>
+				<li v-for="item in courseData">
+					<a class="course-detail">
+						<img src="../../assets/course-detail.png" class="course-pic"/>
+						<p class="course-name">{{item.filename}}</p>
+						<p class="course-teacher"><span>课程:</span><span>{{item.src}}</span></p>
+						<a :href="'/homeDownLoad?filename='+item.src"><i class="el-icon-download"></i></a>
+
 					</a>
 				</li>
 			</ul>
+
 		</div>
 	</div>
 </template>
@@ -29,21 +25,57 @@
 			return {
 				checked:false,
 				 workchoose: true,
-				  value5: 3.7
+				  value5: 3.7,
+                  ishomeWork:1,
+                  courseData:[]
 
 
 
 			}
 		},
 		mounted: function() {
+		    var $this=this;
+            $.ajax({
+                url:'/stuCourseWork',
+                type:'post',
+                data:{
+                    stuId:this.$store.state.stuId
+                },
+                dataType: 'json',
+                success:function(data){
+                    $this.courseData=data;
+                    if($this.courseData.length>0){
+                        $this.ishomeWork=0;
+                    }
+                },
+                error:function(){
+                    console.log('error');
+                }
+            });
 
 
 		},
 		methods: {
-			  handleClose(tag) {
-			  	console.log(1);
-
-      }
+            pdfShowButton:function(id){
+                this.wareShow=!this.wareShow;
+                this.chapterId=id;
+                console.log(id);
+                var $this=this;
+                $.ajax({
+                    url:'/teacherCourseWare',
+                    type:'post',
+                    data:{
+                        chapterId:id
+                    },
+                    dataType: 'json',
+                    success:function(data){
+                       console.log(data);
+                    },
+                    error:function(){
+                        console.log('error');
+                    }
+                });
+            },
 		}
 
 	}
@@ -88,5 +120,51 @@
 				display:inline-block;
 				border: 2px solid #F5F5F5;
 		}
+	}
+	.course-list{
+		width:100%;
+		position:relative;
+		overflow:auto;
+		text-align: left;
+		height:600px;
+	ul{
+		list-style: none;
+		text-align:left;
+		margin:auto 0;
+	li {
+		display: inline-block;
+		position: relative;
+		text-align: center;
+		width:25%;
+	}
+	}
+	.course-pic{
+		width:224px;
+		height:125px;
+
+	}
+	p{
+		margin:10px;
+	}
+	.course-detail{
+		display: inline-block;
+		padding: 10px;
+		margin:10px;
+		border: 2px solid #F5F5F5;
+		position: relative;
+		font-weight:bold;
+
+	i{
+
+	}
+	}
+	}
+	.no-data{
+		width:200px;
+		height:200px;
+		background:url("../../assets/no-data.png");
+		background-position: -400px -300px;
+		background-repeat: no-repeat;
+		margin:0 auto;
 	}
 </style>

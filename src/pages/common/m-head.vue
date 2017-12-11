@@ -14,11 +14,11 @@
 		<el-dialog title="" :visible.sync="dialoglogin" size="tiny" >
 			<span class="logo-small"></span>
 			<div class="user-list">
-				<div class="user-category"@click="go(3)"><i class="user-set"></i><span>我的设置</span></div>
+				<div class="user-category"@click="go(3)"><i class="user-set"></i><span>修改密码</span></div>
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="dialoglogin = false">取 消</el-button>
-    	<el-button type="primary" @click="dialoglogin = false">安全退出</el-button>
+    	<el-button type="primary" @click="loginBack()">安全退出</el-button>
   			</span>
 		</el-dialog>
 	</div>
@@ -35,7 +35,8 @@
 				url:[
 				    '/manager/manager-course',
 				    '/manager/manager-tea',
-				    '/manager/manager-stu'
+				    '/manager/manager-stu',
+					'/user-set'
 				]
 				
 				
@@ -46,6 +47,10 @@
 			 handleClick(tab) {
         		 this.$router.push(this.url[tab.index]);
 			 },
+            loginBack:function(){
+                this.dialoglogin = false;
+                this.$router.push('/');
+            },
    			 go: function(index) {
 			     if(index==0){
                      this.$router.push('/user-course');
@@ -174,6 +179,8 @@
 			background-position: -4px -1744px;
 			display: inline-block;
 			border-radius: 15px;
+			position: relative;
+			top: 7px;
 		}
 		.el-dialog {
 			.buttons {
@@ -211,5 +218,8 @@
 	.v-modal {
 		z-index: -1!important;
 		background-position: 0;
+	}
+	.user-list{
+		cursor:pointer;
 	}
 </style>

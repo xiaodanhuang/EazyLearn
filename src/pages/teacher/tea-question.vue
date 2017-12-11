@@ -1,6 +1,7 @@
 <template>
 	<div class="tea-question">
 		<div class="no-data"></div>
+        <iframe src='"http://127.0.0.1:8080/' width='100%' height='100%' frameborder='0' name="_blank" id="_blank" ></iframe>
 		<div class="question-list">
 			<li v-for="item in questionList">
 				<img src="../../assets/avatar.png">

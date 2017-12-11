@@ -1,59 +1,78 @@
 <template>
 	<div class="stu-detail">
 		<div class="stu-courselist">
-			<div class="course-pic"></div>
+			<img class="course-pic":src="$store.state.courseSrc" />
 			<div class="course-detail">
-				<div class="course-name">web开发大全</div>
+				<div class="course-name">课程名称：{{$store.state.courseName}}</div>
 				<span class="stu-icon"></span>
-				<span class="stu-number">4567</span>
-				<el-rate v-model="value5" disabled show-text text-color="#ff9900" text-template="{value}"></el-rate>
-				<div class="tea-name">讲师：郑帝元</div>
-				<el-button class="course-add">添加课程</el-button>
+				<span class="stu-number">{{$store.state.courseStu}}</span>
+				<div class="tea-name">讲师：{{$store.state.courseTeacher}}</div>
+				<el-button class="course-add" @click="courseAdd()">{{isCourse}}</el-button>
+				<el-button class="course-add" @click="hostCommentButton()">添加评论</el-button>
 			</div>
 		</div>
 		<div class="clear"></div>
 		<el-tabs v-model="activeName" >
-			<el-tab-pane label="公告" name="first"></el-tab-pane>
-			<el-tab-pane label="目录" name="second"></el-tab-pane>
-			<el-tab-pane label="讨论区" name="third"></el-tab-pane>
-		</el-tabs>
-		<div class="no-data displayNone"></div>
-		<div class="tea-proclamation displayNone">
-			<span>作业必须在9月1日之前完成，否则无成绩。</span>
-			<span>一2017:09:12 12:08</span>
-		</div>
-		<div class="tea-catalog">
-			<div>第一章</div>
-			<li v-for="item in catalog">
-				{{item}}
-				<span class="play-icon"></span>
-			</li>
-
-		</div>
-		<div class="tea-question">
-			<li v-for="item in questionList">
-				<img src="../../assets/avatar.png">
-				<span class="stu-information">
-                    <div class="name">{{item.name}}</div>
-                    <div class="time">{{item.time}}</div>
-                </span>
-				<el-button type="text" @click="dialogconment = true">
-					<span class="btn-conment"></span>
-				</el-button>
-				<div class="question">{{item.word}}</div>
-				<div class="answer">
-					<div v-for="item in answer">
-						{{item}}
-					</div>
-
+			<el-tab-pane label="公告" name="first">
+				{{proclamation}}
+			</el-tab-pane>
+			<el-tab-pane label="目录" name="second">
+				<div class="tea-catalog">
+					<li v-for="item in catalog">
+						<span class="chapterName">{{item.chapterName}}</span>
+						<span class="play-icon" @click="pdfShowButton(item.id)"></span>
+					</li>
 				</div>
-			</li>
-		</div>
-		<el-dialog title="" :visible.sync="dialogconment" size="tiny" :before-close="handleClose">
-			<el-input placeholder="回复消息啦啦啦" icon="edit" v-model="anserComent"></el-input>
+			</el-tab-pane>
+			<el-tab-pane label="讨论区" name="third">
+				<div class="tea-question">
+					<li v-for="(item, key, index) in questionList">
+						<div>
+						<img :src="item.avater">
+						<span class="stu-information">
+                    	<div class="name">{{item.username}}</div>
+                    	<div class="time">{{item.commentTime}}</div>
+						</span>
+						<el-button type="text" @click="CommentButton(item.id,key)">
+							<span class="btn-conment"></span>
+						</el-button>
+						</div>
+						<div class="host-comment">{{item.comment}}</div>
+						<div class="guest-comment" v-for="list in item.guestlist">
+							{{list.username}}:{{ list.comment }}
+						</div>
+					</li>
+				</div>
+
+			</el-tab-pane>
+		</el-tabs>
+		<el-dialog title="添加回复" :visible.sync="isDialog" size="tiny" :before-close="commentClose() ">
+			<el-input placeholder="回复消息啦啦啦" icon="edit" v-model="guest.comment"></el-input>
 			<span slot="footer" class="dialog-footer">
-    	<el-button @click="dialogconment = false">取 消</el-button>
-    	<el-button type="primary" @click="conment()">评论</el-button>
+    			<el-button @click="commentClose()">取 消</el-button>
+    			<el-button type="primary" @click="conment()">评论</el-button>
+  			</span>
+		</el-dialog>
+		<el-dialog title="添加评论" :visible.sync="isHost" size="tiny" :before-close="commentClose() ">
+			<el-input placeholder="添加评论" icon="edit" v-model="guest.comment"></el-input>
+			<span slot="footer" class="dialog-footer">
+    			<el-button @click="commentClose()">取 消</el-button>
+    			<el-button type="primary" @click="hostPost()">确认添加</el-button>
+  			</span>
+		</el-dialog>
+		<el-dialog title="目录课件列表" :visible.sync="isHost" size="tiny" :before-close="commentClose() ">
+			<div v-if="fileShow" class="no-data"></div>
+			<div  v-if="!fileShow" class="my-file">
+				<ul>
+					<li v-for="item in wareFile">
+						<span class="file">{{item.filename.replace(/\d+/g,'') }}</span>
+						<a :href="'/downLoad?filename='+item.filename"><i class="el-icon-download" ></i></a>
+					</li>
+				</ul>
+			</div>
+			<span slot="footer" class="dialog-footer">
+    			<el-button @click="commentClose()">取 消</el-button>
+    			<el-button type="primary" @click="hostPost()">确认添加</el-button>
   			</span>
 		</el-dialog>
 
@@ -65,39 +84,238 @@
 		name: 'stu-detail',
 		data() {
 			return {
+			    wareFile:[],
+                isHost:false,
+                fileShow:1,
+				isCourse:'添加课程',
+                proclamation:'我是',
 			    value5:3.7,
                 activeName: 'first',
-				catalog:[
-				    'java的初步认识',
-					'java初步语法',
-					'java继承',
-					'java接口'
-				],
-                dialogconment:false,
-                anserComent:'',
+				catalog:[],
+                isDialog:false,
+                isHost:false,
                 answer:[],
-                questionList:[
-                    {name:'小蛋黄',src:"../../assets/avatar.png",time:'07-27 22:20',word:'蠢狗'},
-                    {name:'小蛋黄allalalalallal',src:"../../assets/avatar.png",time:'07-27 22:20',word:'蠢狗'},
-                    {name:'小蛋黄',src:"../../assets/avatar.png",time:'07-27 22:20',word:'蠢狗'},
-                    {name:'小蛋黄',src:"../../assets/avatar.png",time:'07-27 22:20',word:'蠢狗'}
-                ]
+                questionList:[],
+				guest:{
+                    key:'',
+                    comment:'',
+					hostId:'',
+					stuId:''
+				}
 
 			}
 		},
 		mounted: function() {
+
+            var  $this=this;
+            $.ajax({
+                url:'/teacherByProclamation',
+                type:'post',
+                data:{
+                    id:this.$store.state.courseId
+                },
+                dataType: 'json',
+                success:function(data){
+                    console.log(data);
+                    $this.proclamation=data.proclamation;
+                },
+                error:function(){
+                    console.log('error');
+                }
+            });
+            $.ajax({
+                url:'/teacherByChapter',
+                type:'post',
+                data:{
+                    courseId:this.$store.state.courseId
+                },
+                dataType: 'json',
+                success:function(data){
+                    $this.catalog=data;
+                },
+                error:function(){
+                    console.log('error');
+                }
+            });
+            $.ajax({
+                url:'/stuCourseByComment',
+                type:'post',
+                data:{
+                    courseId:this.$store.state.courseId
+                },
+                dataType: 'json',
+                success:function(data){
+                    console.log(data);
+                    $this.questionList=data;
+                },
+                error:function(){
+                    console.log('error');
+                }
+            });
+            $.ajax({
+                url:'/stuCourseQuery',
+                type:'post',
+                data:{
+                    stuId:this.$store.state.stuId,
+                    courseId:this.$store.state.courseId
+                },
+                dataType: 'json',
+                success:function(data){
+                   if(data.length==1){
+                       $this.isCourse='已添加课程';
+				   }else{
+                       $this.isCourse='添加课程';
+				   }
+                },
+                error:function(){
+                    console.log('error');
+                }
+            });
+
 	
 		},
 		methods: {
-            conment(){
-                this.dialogconment = false;
+            courseAdd:function(){
+                console.log(this.$store.state.courseId);
+                console.log(this.$store.state.stuId);
+                var $this=this;
+                if(this.isCourse!='已添加课程') {
+                    $.ajax({
+                        url: '/stuCourseAdd',
+                        type: 'post',
+                        data: {
+                            stuId: this.$store.state.stuId,
+                            courseId: this.$store.state.courseId
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data == 1) {
+                                var h = $this.$createElement;
+                                $this.$notify.error({
+                                    title: '',
+                                    message: h('i', {style: 'color: teal'}, '添加成功'),
+                                    position: 'right-bottom',
+                                    offset: 300,
+                                    duration: 1000
 
-                this.answer.push(this.anserComent);
+                                });
+                                $this.isCourse = '已添加课程';
+                            }
+                            else {
+                                $this.$notify.error({
+                                    title: '',
+                                    message: h('i', {style: 'color: teal'}, '添加失败'),
+                                    position: 'right-bottom',
+                                    offset: 300,
+                                    duration: 1000
+
+                                });
+                            }
+                        },
+                        error: function () {
+                            console.log('error');
+                        }
+                    });
+                }
+			},
+            pdfShowButton:function(id){
+                var $this=this;
+                $.ajax({
+                    url:'/teacherCourseWare',
+                    type:'post',
+                    data:{
+                        chapterId:id
+                    },
+                    dataType: 'json',
+                    success:function(data){
+                       $this.wareFile=data;
+
+                       $this.isHost=true;
+                        if(data.length>0){
+                            $this.fileShow= 0;
+                        }else{
+                            $this.fileShow= 1;
+                        }
+                    },
+                    error:function(){
+                        console.log('error');
+                    }
+                });
+            },
+            conment(){
+                this.guest.stuId=this.$store.state.stuId;
+                this.isDialog =false;
+                console.log(this.guest);
+                var $this=this;
+                $.ajax({
+                    url:'/stuGuestAdd',
+                    type:'post',
+                    data:{
+                        commentId:this.guest.hostId,
+                        stuId:this.guest.stuId,
+                        comment:this.guest.comment
+
+                    },
+                    dataType: 'json',
+                    success:function(data){
+                        console.log(data);
+                        $this.questionList[$this.guest.key].guestlist=data;
+                        $this.guest.comment=''
+
+                    },
+                    error:function(){
+                        console.log('error');
+                    }
+                });
+
 
             },
-            handleClose(done) {
-                this.dialogconment=false;
-            }
+			hostPost:function(){
+                var $this=this;
+                var date= new Date().Format("yyyy-MM-dd hh:mm");
+                var id= $(".tea-question li").length+1;
+                $.ajax({
+                    url:'/stuCommentAdd',
+                    type:'post',
+                    data:{
+                        id: id,
+						courseId:this.$store.state.courseId ,
+						hostId:this.$store.state.stuId,
+						comment:this.guest.comment,
+						commentTime: date
+
+
+                    },
+                    dataType: 'json',
+                    success:function(data){
+                        console.log(data);
+                        $this.questionList=data;
+                        $this.guest.comment=''
+                        $this.isdialog=false;
+
+                    },
+                    error:function(){
+                        console.log('error');
+                    }
+                });
+			},
+			CommentButton:function(id,key){
+                this.guest.hostId=id;
+                this.guest.key=key;
+                this.isDialog= true;
+
+
+			},
+            hostCommentButton:function(){
+                this.isHost=true;
+			},
+            commentClose :function() {
+                this.isdialog=false;
+                this.hostComment=false;
+            },
+            downFile:function(id){
+                console.log(id)
+			}
 
 		}
 	}
@@ -169,8 +387,13 @@
 			 text-align:left;
 			 padding-left:20px;
 			 margin:0 auto;
+			 overflow: auto;
+			 height: 200px;
 			 li{
 				 list-style: none;
+				 border-bottom: 1px dashed #e0e0e0;
+			     height:30px;
+			     margin-top:5px;
 				 .play-icon{
 					 display:inline-block;
 					 width: 13px;
@@ -182,61 +405,76 @@
 
 			 }
 	     }
-	.tea-question{
-	li{
-		list-style: none;
-		text-align:left;
-		width:80%;
-		margin:0 auto;
-		margin-bottom:10px;
-		padding: 5px 0px 10px 20px;
-		border-bottom: 1px dashed #e0e0e0;
+		.tea-question{
+			height:350px;
+			overflow:auto;
+
+			li{
+				list-style: none;
+				text-align:left;
+				width:80%;
+				margin:0 auto;
+				margin-bottom:10px;
+				padding: 5px 0px 10px 20px;
+				border-bottom: 1px dashed #e0e0e0;
+				overflow: auto;
+
+			}
+			img{
+				width: 50px;
+				height: 50px;
+				border-radius: 25px;
+			}
+			.stu-information{
+				display:inline-block;
+				text-align:left;
+				position: relative;
+				top: -10px;
+				.name{
+					font-size:14px;
+					width:100px;
+					overflow:hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+				.time{
+					font-size:12px;
+				}
+		}
+		.el-button--text {
+			float: right;
+			.btn-conment{
+				display:inline-block;
+				width:50px;
+				height:30px;
+				background:url("../../assets/btn-comment.png");
+				background-size: cover;
+				float:right;
+			}
+		}
+		.guest-comment {
+			font-size: 12px;
+		}
+
 
 	}
-	img{
-		width: 50px;
-		height: 50px;
-		border-radius: 25px;
-	}
-	.stu-information{
+	.chapterName{
 		display:inline-block;
-		text-align:left;
-		position: relative;
-		top: -10px;
-	.name{
-		font-size:14px;
-		width:100px;
-		overflow:hidden;
-		white-space: nowrap;
-		text-overflow: ellipsis;
-	}
-	.time{
-		font-size:12px;
-	}
-	}
-	.el-button--text {
-		float: right;
-	.btn-conment{
-		display:inline-block;
-		width:50px;
-		height:30px;
-		background:url("../../assets/btn-comment.png");
-		background-size: cover;
-		float:right;
-	}
-	}
-
-	.question,.answer{
-		padding-left:50px;
-	}
-
+		width:80px;
 	}
 	.el-dialog{
-	.el-input{
-		width:80%;
+		.el-input{
+			width:80%;
+		}
+	.no-data{
+		width:200px;
+		height:200px;
+		background-image: url("../../assets/no-data.png");
+		display:inline-block;
 	}
 
 	}
+
 
 
 

@@ -7,22 +7,19 @@
 		<el-tabs v-model="activeName" @tab-click="handleClick">
 			<el-tab-pane label="课程"index="0"name="first"></el-tab-pane>
 			<el-tab-pane label="作业"index="1"name="second"></el-tab-pane>
-			<el-tab-pane label="线上答疑" index="2"name="third"></el-tab-pane>
-			<el-input placeholder="请输入关键字搜索" icon="search"></el-input>
 		</el-tabs>
 		<el-dialog title="" :visible.sync="dialoglogin" size="tiny" :before-close="handleClose">
 			<span class="logo-small"></span>
 			<div class="user-list">
-			<div class="user-category"@click="go(0)" ><i class="user-course"></i><span>我的课程</span></div>
+			<div class="user-category"@click="go(2)" ><i class="user-course"></i><span>我的课程</span></div>
 			<div class="user-category"@click="go(1)" ><i class="user-work"></i><span>我的作业</span></div>
 			</div>
 				<div class="user-list">
-			<div class="user-category"@click="go(2)" ><i class="user-question"></i><span>我的答疑</span></div>
-			<div class="user-category"@click="go(3)"><i class="user-set"></i><span>我的设置</span></div>
+			<div class="user-category"@click="go(3)"><i class="user-set"></i><span>修改密码</span></div>
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="dialoglogin = false">取 消</el-button>
-    	<el-button type="primary" @click="dialoglogin = false">安全退出</el-button>
+    	<el-button type="primary" @click="loginBack()">安全退出</el-button>
   			</span>
 		</el-dialog>
 
@@ -41,7 +38,7 @@
 				url:[
 				'/index/stu-course',
 				'/index/stu-work',
-				'/index/stu-question',
+				'/index/stu-myCourse',
 				'/user-set'
 				]
 				
@@ -51,17 +48,21 @@
 		components: {},
 		methods: {
 			 handleClick(tab) {
-         this.$router.push(this.url[tab.index]);
-    },
-    go: function(index) {
-			     if(index==0){
-                     this.$router.push('/user-course');
-                     reuturn;
-
-				 }
-			this.$router.push(this.url[index]);
+                 if(tab.index==2){
+                     window.location.href='http://127.0.0.1:8080?filename='+this.$store.state.userName;
+                     return;
+                 }
+         		this.$router.push(this.url[tab.index]);
+    		},
+    		go: function(index) {
+                this.dialoglogin = false;
+				 this.$router.push(this.url[index]);
 			
-		}
+			},
+            loginBack:function(){
+                this.dialoglogin = false;
+                this.$router.push('/');
+			}
 			
 		},
 		handleClose(done) {
@@ -230,5 +231,8 @@
 	.v-modal {
 		z-index: -1!important;
 		background-position: 0;
+	}
+	.user-list{
+		cursor:pointer;
 	}
 </style>

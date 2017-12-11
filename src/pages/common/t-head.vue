@@ -7,9 +7,6 @@
 		<el-tabs v-model="activeName" @tab-click="handleClick">
 			<el-tab-pane label="课程管理"index="0"name="first"></el-tab-pane>
 			<el-tab-pane label="作业管理"index="1"name="second"></el-tab-pane>
-			<el-tab-pane label="线上答疑" index="2"name="third"></el-tab-pane>
-
-			<el-input placeholder="请输入关键字搜索" icon="search"></el-input>
 		</el-tabs>
 		<el-dialog title="" :visible.sync="dialoglogin" size="tiny" :before-close="handleClose">
 			<span class="logo-small"></span>
@@ -18,12 +15,11 @@
 			<div class="user-category"@click="go(1)" ><i class="user-work"></i><span>作业管理</span></div>
 			</div>
 				<div class="user-list">
-			<div class="user-category"@click="go(2)" ><i class="user-question"></i><span>我的答疑</span></div>
 			<div class="user-category"@click="go(3)"><i class="user-set"></i><span>我的设置</span></div>
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="dialoglogin = false">取 消</el-button>
-    	<el-button type="primary" @click="dialoglogin = false">安全退出</el-button>
+    	<el-button type="primary"@click="loginBack()">安全退出</el-button>
   			</span>
 		</el-dialog>
 
@@ -52,18 +48,22 @@
 		components: {},
 		methods: {
 			 handleClick(tab) {
+                 if(tab.index==2){
+                     window.location.href='http://127.0.0.1:8080?filename='+this.$store.state.userName;
+                     return;
+                 }
 			 	this.$router.push(this.url[tab.index]);
 
     },
     go: function(index) {
-        if(index==0){
-            this.$router.push('/user-course');
-            reuturn;
-
-        }
+        this.dialoglogin = false;
 			this.$router.push(this.url[index]);
 
-		}
+		},
+            loginBack:function(){
+                this.dialoglogin = false;
+                this.$router.push('/');
+            }
 
 		},
 		handleClose(done) {
@@ -148,9 +148,7 @@
 		.el-dialog--tiny {
 			top:70px;
     width: 30%;
-    right: -220px;.user-list{
-					  cursor:pointer;
-				  }
+    right: -220px;
 
     .user-category{
     	background: #f3f5f7;
@@ -240,5 +238,8 @@
 	.v-modal {
 		z-index: -1!important;
 		background-position: 0;
+	}
+	.user-list{
+		cursor:pointer;
 	}
 </style>

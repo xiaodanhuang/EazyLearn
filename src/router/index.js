@@ -16,6 +16,8 @@ import Tea from  '@/pages/teacher'
 import Teacourse from  '@/pages/teacher/tea-course'
 import Teawork from  '@/pages/teacher/tea-work'
 import Teaquestion from  '@/pages/teacher/tea-question'
+import UserWord  from '@/pages/user-passwordFind'
+import mycourse from '@/pages/student/stu-mycourse'
 
 
 Vue.use(Router);
@@ -29,6 +31,11 @@ export default new Router({
 		},{
 			path:'/user-set',
 			component:Userset
+
+
+		},{
+			path:'/user-passwordFind',
+			component:UserWord
 
 
 		},{
@@ -128,6 +135,13 @@ export default new Router({
                     path:"stu-tail",
                     name:'stu-tail',
                     component:Stdtail
+
+
+                },{
+
+                    path:"stu-myCourse",
+                    name:'stu-myCourse',
+                    component:mycourse
 
 
                 }

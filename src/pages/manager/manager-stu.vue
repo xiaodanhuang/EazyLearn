@@ -1,14 +1,10 @@
 <template>
 	<div class="manager-stu">
 		<nav>
-			<el-button>导入</el-button>
 			<el-button @click="insertFill()">添加</el-button>
-			<el-button @click="deleteByCheck(stuData)">删除</el-button>
 		</nav>
-		<el-table :data="stuData" border style="width: 100%">
+		<el-table max-height="400" :data="stuData" border style="width: 100%">
 			<el-table-column type="index" label="序号" width="80"></el-table-column>
-			<el-table-column type="selection" width="55"align="center">
-			</el-table-column>
 			<el-table-column  prop="id" label="学号" align="center"></el-table-column>
 			<el-table-column prop="username" label="姓名"align="center"></el-table-column>
 			<el-table-column prop="schoolTime" label="入学时间" align="center"></el-table-column>
@@ -23,7 +19,12 @@
 			<span class="logo-small"></span>
 			<div class="user-list">
 				<el-input v-model="postData.username" placeholder="请输入课程名"></el-input>
-				<el-input v-model="postData.schoolTime" placeholder="请输入教学时间"></el-input>
+				<el-date-picker
+						v-model="postData.schoolTime"
+						placeholder="请输入教学时间"
+						type="date">
+				</el-date-picker>
+
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="editFalse()">取 消</el-button>
@@ -35,22 +36,17 @@
 			<div class="user-list">
 				<el-input v-model="insertData.id" placeholder="请输入学号"></el-input>
 				<el-input v-model="insertData.username" placeholder="请输入学生姓名"></el-input>
-				<el-input v-model="insertData.time" placeholder="请输入学时间"></el-input>
+				<el-date-picker
+						v-model="insertData.time"
+						placeholder="请输入教学时间"
+						type="date">
+				</el-date-picker>
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="editFalse()">取 消</el-button>
     	<el-button type="primary" @click="insertPost()">确认修改</el-button>
   			</span>
 		</el-dialog>
-		<div class="block">
-			<el-pagination
-					:page-sizes="[100, 200, 300, 400]"
-					:page-size="100"
-					layout="total, sizes, prev, pager, next, jumper"
-					:total="400">
-			</el-pagination>
-		</div>
-
 	</div>
 </template>
 
@@ -97,21 +93,25 @@
                 this.editData=true;
                 this.postData.id=row.id;
                 this.postData.username=row.username;
-                this.postData.schoolTime=row.schoolTime;
             },
             editFalse(){
 
                 this.editData=false;
                 this.addData=false;
+                this.postData.schoolTime='';
+                this.insertData.time='';
 
             },
             handleClose() {
                 this.editData=false;
                 this.addData=false;
+                this.postData.schoolTime='';
+                this.insertData.time='';
 
             },
             handlePost(){
                 var $this=this;
+                this.postData.schoolTime= new Date(this.postData.schoolTime).Format("yyyy.MM.dd");
                 $.ajax({
                     url:'/manageStudentUpdate',
                     data:{
@@ -125,6 +125,7 @@
                     success:function(data){
                         $this.stuData=data;
                         $this.editData=false;
+                        $this.postData.schoolTime='';
 
 
                     },
@@ -162,6 +163,33 @@
             },
 			insertPost(){
                 var $this=this;
+                if(!(this.insertData.id&&this.insertData.username&&this.insertData.time)){
+                    var  h = this.$createElement;
+                    this.$notify({
+                        title: '',
+                        message: h('i', { style: 'color: teal'}, '部分资料未填写'),
+                        type: 'warning',
+                        position: 'right-bottom',
+                        offset: 300,
+                        duration:0
+
+                    });
+                    return 0;
+                }
+                if(this.insertData.id.match(/\d/g).length!=8){
+                    var  h = this.$createElement;
+                    this.$notify({
+                        title: '',
+                        message: h('i', { style: 'color: teal'}, '学生id格式错误请输入长度为8位的数字'),
+                        type: 'warning',
+                        position: 'right-bottom',
+                        offset: 300,
+                        duration: 1000
+
+                    });
+                    return 0;
+                }
+                this.insertData.time= new Date(this.insertData.time).Format("yyyy.MM.dd");
                 $.ajax({
                     url:'/manageStudentAdd',
                     data:{
@@ -175,6 +203,7 @@
                     success:function(data){
                         $this.stuData=data;
                         $this.addData=false;
+                        $this.insertData.time='';
 
 
                     },
@@ -193,6 +222,9 @@
 <style lang="scss" rel="stylesheet/scss" type="text/css">
 	.manager-stu{
 		height:100%;
+		.el-date-editor.el-input.el-input--prefix.el-input--suffix.el-date-editor--date {
+			width: 100%;
+		}
 		nav{
 			text-align:left;
 			padding:20px;

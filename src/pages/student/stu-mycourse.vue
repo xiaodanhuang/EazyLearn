@@ -1,12 +1,5 @@
 <template>
 	<div class="stu-course">
-		<div class="Tabc">
-			<el-tabs v-model="activeName" @tab-click="sortBy(activeName)" >
-				<el-tab-pane label="综合排序" name="0"></el-tab-pane>
-				<el-tab-pane label="最新" name="1"></el-tab-pane>
-    			<el-tab-pane label="最热" name="2"></el-tab-pane>
- 			</el-tabs>
-		</div>
 		<div class="course-list">
 			<ul>
 				<li v-for="item in courseData">
@@ -55,61 +48,30 @@
             this.$nextTick(function () {
                 var $this=this;
                 $.ajax({
-                    url:'/stuByCourse',
+                    url:'/stuMyCourse',
                     type:'post',
+					data:{
+                        stuId: this.$store.state.stuId
+					},
+
                     dataType: 'json',
                     success:function(data){
                         $this.courseData=data;
                         console.log(data);
-
                     },
                     error:function(){
 
                     }
-
                 });
-
             });
 		    var height = $(".stu-course").height();
 	        $(".course-list").height(height - 177);
             $(".el-tag").click(function(){
-    	    $(this).toggleClass("el-tag--danger");
-    	
-  
-});
+    	    	$(this).toggleClass("el-tag--danger");
+			});
 	
 		},
 		methods: {
-            sortBy(name) {
-                var $this=this;
-                $.ajax({
-                    url:'/'+this.urlList[name],
-                    type:'post',
-                    dataType: 'json',
-                    success:function(data){
-                        $this.courseData=data;
-
-                    },
-                    error:function(){
-                        console.log('error');
-
-                    }
-
-                })
-            },
-		    courseInto(id,courseStu,src,courseTeacher,courseName ){
-                console.log(id,courseStu,src,courseTeacher);
-                this.$store.commit('postCourseId',id);
-                this.$store.commit('postCourseStu',courseStu);
-                this.$store.commit('postCourseSrc',src);
-                this.$store.commit('postCourseTeacher',courseTeacher);
-                this.$store.commit('postCourseName',courseName );
-                this.$router.push('/index/stu-tail');
-
-			},
-            close:function(){
-		        console.log('ascdf')
-	}
 		}
 
 	}

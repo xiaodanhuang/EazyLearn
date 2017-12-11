@@ -39,11 +39,18 @@
                     '/index/stu-course',
                     '/teacher/tea-course',
 					'/manager/manager-course'
-
 			  ]
 			};
 		},
+        mounted: function() {
+
+		},
 		methods: {
+		    //找回密码
+            userFind:function(){
+                this.$router.push('/user-passwordFind');
+			},
+			//登录
 			submitForm(formName) {
                 var $this=this;
 			    if(!(this.form.name&&this.form.password&&this.form.category)){
@@ -61,17 +68,27 @@
 				}
 				this.$refs[formName].validate((valid) => {
 					if(valid) {
-					    console.log(this.url[this.form.category-1]);
+                        var src = this.form.category - 1;
                         $.ajax({
-                            url:'/'+this.url[this.form.category-1],
-                            type:'post',
+                            url: '/' + this.url[this.form.category - 1],
+                            type: 'post',
                             dataType: 'json',
-                            data:{
-                                name:this.form.name,
-                                password:this.form.password
+                            data: {
+                                name: this.form.name,
+                                password: this.form.password
                             },
-                            success:function(data){
-                                $this.$router.push($this.routerUrl[$this.form.category-1]);
+                            success: function (data) {
+                                if (src == 0) {
+                                    $this.$store.commit('postStuId', data.id);
+                                }
+                                if (src == 1) {
+                                    $this.$store.commit('postTeacherId', data.id);
+                                }
+                                if (src == 2) {
+                                    $this.$store.commit('postManageId', data.id);
+                                }
+                                $this.$store.commit('postUserName', data.username);
+                                $this.$router.push($this.routerUrl[$this.form.category - 1]);
                             },
                             error:function(){
                                 var  h = $this.$createElement;
@@ -83,16 +100,20 @@
                                     duration:1000
 
                                 });
-
                             }
 
                         });
-						
-					}
-				});
-			},
+
+                    }
+                });
+            },
+			//重置
 			resetForm(formName) {
-				$('.el-form')[0].reset()
+                this.form= {
+                    	name: '',
+                        password: '',
+                        category: 0,
+                }
 			}
 		}
 	}

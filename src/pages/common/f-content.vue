@@ -27,4 +27,17 @@
 	.index-content-row{
 		z-index:-2!important;
 	}
+	.el-tabs__item {
+		color: #696969;
+	}
+	.el-tabs__nav-wrap::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		height: 2px;
+		background-color:transparent;
+		z-index: 1;
+	}
 </style>
