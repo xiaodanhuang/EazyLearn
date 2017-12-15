@@ -352,9 +352,6 @@
                   }).catch(function (data) {
 					  console.log(data);
 				  });
-
-
-
               })
 
           },
