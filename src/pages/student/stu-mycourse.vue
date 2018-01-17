@@ -62,7 +62,7 @@
                     error:function(){
 
                     }
-                });
+                });hu
             });
 		    var height = $(".stu-course").height();
 	        $(".course-list").height(height - 177);
@@ -72,6 +72,16 @@
 	
 		},
 		methods: {
+            courseInto(id,courseStu,src,courseTeacher,courseName ){
+                console.log(id,courseStu,src,courseTeacher);
+                this.$store.commit('postCourseId',id);
+                this.$store.commit('postCourseStu',courseStu);
+                this.$store.commit('postCourseSrc',src);
+                this.$store.commit('postCourseTeacher',courseTeacher);
+                this.$store.commit('postCourseName',courseName );
+                this.$router.push('/index/stu-tail');
+
+            }
 		}
 
 	}

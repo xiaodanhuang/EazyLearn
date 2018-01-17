@@ -43,7 +43,6 @@
 			};
 		},
         mounted: function() {
-
 		},
 		methods: {
 		    //找回密码
@@ -97,7 +96,7 @@
                                     message: h('i', { style: 'color: teal'}, '账户或密码输入错误'),
                                     position: 'right-bottom',
                                     offset: 300,
-                                    duration:1000
+                                    duration:0
 
                                 });
                             }

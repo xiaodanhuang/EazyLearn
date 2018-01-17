@@ -60,7 +60,7 @@
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="chapterClose()">取 消</el-button>
-    	<el-button type="primary" @click="postChapterAdd()">确认修改</el-button>
+    	<el-button type="primary" @click="postChapterAdd()">确认添加</el-button>
   			</span>
 		</el-dialog>
 		<el-dialog title="编辑课程章节" :visible.sync="chapterEdit" size="tiny"  :before-close="chapterClose">
@@ -285,7 +285,7 @@
                       url:'/teacherChapterAdd',
                       type:'post',
                       data:{
-                          id:this.chapterMessage.id,
+                          id:this.chapterMessage.id+1,
                           courseId:this.chapterMessage.courseId,
 						  chapterName:this.chapterMessage.chapterName
                       },

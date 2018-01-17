@@ -4,8 +4,6 @@
 			<img class="course-pic":src="$store.state.courseSrc" />
 			<div class="course-detail">
 				<div class="course-name">课程名称：{{$store.state.courseName}}</div>
-				<span class="stu-icon"></span>
-				<span class="stu-number">{{$store.state.courseStu}}</span>
 				<div class="tea-name">讲师：{{$store.state.courseTeacher}}</div>
 				<el-button class="course-add" @click="courseAdd()">{{isCourse}}</el-button>
 				<el-button class="course-add" @click="hostCommentButton()">添加评论</el-button>
@@ -49,18 +47,18 @@
 		<el-dialog title="添加回复" :visible.sync="isDialog" size="tiny" :before-close="commentClose() ">
 			<el-input placeholder="回复消息啦啦啦" icon="edit" v-model="guest.comment"></el-input>
 			<span slot="footer" class="dialog-footer">
-    			<el-button @click="commentClose()">取 消</el-button>
+    			<el-button @click="dialogClose()">取 消</el-button>
     			<el-button type="primary" @click="conment()">评论</el-button>
   			</span>
 		</el-dialog>
 		<el-dialog title="添加评论" :visible.sync="isHost" size="tiny" :before-close="commentClose() ">
 			<el-input placeholder="添加评论" icon="edit" v-model="guest.comment"></el-input>
 			<span slot="footer" class="dialog-footer">
-    			<el-button @click="commentClose()">取 消</el-button>
+    			<el-button @click="dialogClose()">取 消</el-button>
     			<el-button type="primary" @click="hostPost()">确认添加</el-button>
   			</span>
 		</el-dialog>
-		<el-dialog title="目录课件列表" :visible.sync="isHost" size="tiny" :before-close="commentClose() ">
+		<el-dialog title="目录课件列表" :visible.sync="isWare" size="tiny" :before-close="commentClose() ">
 			<div v-if="fileShow" class="no-data"></div>
 			<div  v-if="!fileShow" class="my-file">
 				<ul>
@@ -71,7 +69,7 @@
 				</ul>
 			</div>
 			<span slot="footer" class="dialog-footer">
-    			<el-button @click="commentClose()">取 消</el-button>
+    			<el-button @click="dialogClose()">取 消</el-button>
     			<el-button type="primary" @click="hostPost()">确认添加</el-button>
   			</span>
 		</el-dialog>
@@ -86,6 +84,7 @@
 			return {
 			    wareFile:[],
                 isHost:false,
+				isWare:false,
                 fileShow:1,
 				isCourse:'添加课程',
                 proclamation:'我是',
@@ -230,7 +229,7 @@
                     success:function(data){
                        $this.wareFile=data;
 
-                       $this.isHost=true;
+                       $this.isWare=true;
                         if(data.length>0){
                             $this.fileShow= 0;
                         }else{
@@ -291,7 +290,7 @@
                         console.log(data);
                         $this.questionList=data;
                         $this.guest.comment=''
-                        $this.isdialog=false;
+                        $this.isHost=false;
 
                     },
                     error:function(){
@@ -310,13 +309,13 @@
                 this.isHost=true;
 			},
             commentClose :function() {
-                this.isdialog=false;
-                this.hostComment=false;
             },
-            downFile:function(id){
-                console.log(id)
-			}
+			dialogClose:function(){
+                this.isHost=false;
+                this.isDialog=false;
+                this.isWare=false;
 
+			}
 		}
 	}
 </script>

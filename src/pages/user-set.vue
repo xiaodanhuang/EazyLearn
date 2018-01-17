@@ -5,8 +5,8 @@
 		<img class="avatar"src="../assets/avatar.png">
 		<el-input v-model="changeForm.id"placeholder="请输入账户id"icon="edit"></el-input>
 		<el-input v-model="changeForm.username" placeholder="请输入账户姓名"icon="edit"></el-input>
-		<el-input v-model="changeForm.pass"placeholder="新密码"icon="edit"></el-input>
-		<el-input v-model="changeForm.checkPass"placeholder="再次输入密码"icon="edit"></el-input>
+		<el-input type="password" v-model="changeForm.pass"placeholder="新密码"icon="edit"></el-input>
+		<el-input type="password" v-model="changeForm.checkPass"placeholder="再次输入密码"icon="edit"></el-input>
 		<div id="slider">
 			<div id="slider_bg" style="width: 0px;"></div>
 			<span id="label" style="left: 0px;">&gt;&gt;</span>
@@ -64,14 +64,11 @@
                         position: 'right-bottom',
                         offset: 300,
                         duration: 1000
-
                     });
                     var slider = new SliderUnlock("#slider",{
                         successLabelTip : "验证成功"
                     },function(){
                         $this.dis=false;
-
-
                     });
                     slider.init();
                     $this.dis=true;
@@ -85,7 +82,6 @@
                      position: 'right-bottom',
                      offset: 300,
                      duration:1000
-
                  });
                  var slider = new SliderUnlock("#slider",{
                      successLabelTip : "验证成功"
@@ -103,7 +99,6 @@
                         username:this.changeForm.username,
                         password:this.changeForm.pass
                     },
-
                     dataType: 'json',
                     type:'post',
                     success:function(data){
@@ -124,7 +119,6 @@
                            });
                            slider.init();
                            $this.dis=true;
-
 						   var  h = $this.$createElement;
                            $this.$notify.error({
                                title: '',
@@ -132,17 +126,13 @@
                                position: 'right-bottom',
                                offset: 300,
                                duration:1000
-
                            });
 					   }
-
                     },
                     error:function(){
                         console.log('update false');
                     }
-
                 });
-
 			}
         },
         components: {

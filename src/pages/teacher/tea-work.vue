@@ -27,6 +27,10 @@
                   <img src="../../assets/course-detail.png" class="course-pic"/>
                   <p class="course-name">{{item.filename}}</p>
                   <p class="course-teacher"><span>课程:</span><span>{{item.courseName}}</span></p>
+                  <p class="course-teacher">
+                    <span>下载学生已提交的作业:</span>
+                    <a :href="'/homeDownLoad?filename='+item.src"><i class="el-icon-download"></i></a>
+                  </p>
                   <a :href="'/homeDownLoad?filename='+item.src"><i class="el-icon-download"></i></a>
                   <i class="el-icon-delete" @click="workDelete(item.id,item.src)"></i>
                 </a>
@@ -154,8 +158,6 @@
             };
             console.log(this.courseForm)
            $("#form").ajaxForm(options);
-
-
         }
 
     }

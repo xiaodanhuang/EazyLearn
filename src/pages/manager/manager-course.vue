@@ -51,7 +51,7 @@
 			</div>
 			<span slot="footer" class="dialog-footer">
     	<el-button @click="editFalse()">取 消</el-button>
-    	<el-button type="primary" @click="insertCourse()">确认修改</el-button>
+    	<el-button type="primary" @click="insertCourse()">确认添加</el-button>
   			</span>
 		</el-dialog>
 	</div>
@@ -208,7 +208,6 @@
                         courseTeacher: this.insertData.courseTeacher,
                         courseTime:this.insertData.courseTime
                     },
-
                     dataType: 'json',
                     type:'post',
                     success:function(data){
@@ -222,24 +221,13 @@
                                 courseTeacher:'',
                                 courseTime:''
                         }
-
-
                     },
                     error:function(){
                         console.log('update false');
                     }
-
                 });
-
-
-
-
-            },
-            deleteByCheck(rows){
-
             }
         }
-
 	}
 </script>
 

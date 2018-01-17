@@ -7,6 +7,7 @@
 		<el-tabs v-model="activeName" @tab-click="handleClick">
 			<el-tab-pane label="课程"index="0"name="first"></el-tab-pane>
 			<el-tab-pane label="作业"index="1"name="second"></el-tab-pane>
+			<el-tab-pane label="我的课程"index="2"name="third"></el-tab-pane>
 		</el-tabs>
 		<el-dialog title="" :visible.sync="dialoglogin" size="tiny" :before-close="handleClose">
 			<span class="logo-small"></span>
@@ -48,10 +49,6 @@
 		components: {},
 		methods: {
 			 handleClick(tab) {
-                 if(tab.index==2){
-                     window.location.href='http://127.0.0.1:8080?filename='+this.$store.state.userName;
-                     return;
-                 }
          		this.$router.push(this.url[tab.index]);
     		},
     		go: function(index) {

@@ -9,6 +9,7 @@
 						<p class="course-name">{{item.filename}}</p>
 						<p class="course-teacher"><span>课程:</span><span>{{item.src}}</span></p>
 						<a :href="'/homeDownLoad?filename='+item.src"><i class="el-icon-download"></i></a>
+						<a :href="'/homeDownLoad?filename='+item.src"><i class="el-icon-upload2"></i></a>
 
 					</a>
 				</li>
